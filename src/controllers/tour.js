@@ -1,3 +1,4 @@
+const { validateField } = require('../utils/validations');
 const Tour = require('../models/tour');
 
 const getAllTours = async () => {
@@ -7,10 +8,8 @@ const getAllTours = async () => {
 const getMatchesByTourName = async params => {
     const { name } = params;
 
-    if (!name) {
-        throw new Error('Missing required parameter: name');
-    }
-
+    validateField(name, 'Missing required parameter: name');
+    
     return await Tour.getMatchesByTourName(params);
 }
 

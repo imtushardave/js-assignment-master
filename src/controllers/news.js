@@ -2,21 +2,38 @@ const News = require('../models/news');
 const Tour = require('../models/tour');
 const Match = require('../models/match');
 
+const NewsType = require('../enums/NewsType');
+const ErrorName = require('../enums/ErrorName');
+
+const { validateField, validateAddNews } = require('../utils/validations');
+
+
+const addNews = async (params, news) => {
+
+    validateAddNews(params, news);
+
+    const newsType = params['type'];
+    
+    switch (newsType) {
+        case NewsType.MATCH :
+            const matchId = params['id'];
+            return addNewsForMatch(matchId, news);
+        case NewsType.TOUR : 
+            const tourId = params['id'];
+            return addNewsForTour(tourId, news);
+        default : 
+            let error = new Error(`${newsType} is not a valid news type`);
+            error.name = ErrorName.INVALID_VALUE;
+            throw error;
+    }
+}
+
 
 const addNewsForMatch = async (matchId, news) => {
-    const {title, description} = news;
     
-    if (!title) {
-        throw new Error('Missing required body parameter : title');
-    }
-    if (!description) {
-        throw new Error('Missing required body parameter : description');
-    }
-    if (!matchId) {
-        throw new Error('Missing path parameter : id');
-    }
-
     let matchDetails =  await Match.getTourAndSportDetailsForMatch(matchId);
+    validateField(matchDetails, `No tour found with id : ${matchId}`);
+
     news.sportId = matchDetails.sportId;
     news.tourId = matchDetails.tourId;
     news.matchId = matchId;
@@ -25,16 +42,10 @@ const addNewsForMatch = async (matchId, news) => {
 }
 
 const addNewsForTour = async (tourId, news) => {
-    const {title, description} = news;
     
-    if (!title) {
-        throw new Error('Missing required body parameter : title');
-    }
-    if (!description) {
-        throw new Error('Missing required body parameter : description');
-    }
-
     let tourDetails = await Tour.getTour(tourId);
+    validateField(tourDetails, `No tour found with id : ${tourId}`);
+
     news.sportId = tourDetails.sportId;
     news.tourId = tourId;
     
@@ -42,41 +53,25 @@ const addNewsForTour = async (tourId, news) => {
 }
 
 const getNewsForSport = async params => {
-
-    const sportId = params['id'];
-
-    if (!sportId) {
-        throw new Error('Missing required parameter : sportId');
-    }
-
+    const sportId = params['sportId'];
+    validateField(sportId, 'Missing path parameter : news/sport/{id}');
     return await News.getNewsForSport(params);
 }
 
 const getNewsForTour = async params => { 
-
-    const tourId = params['id'];
-
-    if (!tourId) {
-        throw new Error('Missing Required Parameter : tourId');
-    }
-
+    const tourId = params['tourId'];
+    validateField(tourId, 'Missing path parameter : news/tour/{id}');
     return await News.getNewsForTour(params);
 }
 
 const getNewsForMatch = async params => { 
-
-    const matchId = params['id'];
-
-    if (!matchId) {
-        throw new Error('Missing Required Parameter : matchId');
-    }
-
+    const matchId = params['matchId'];
+    validateField(matchId, 'Missing path parameter : news/match/{id}');
     return await News.getNewsForMatch(params);
 }
 
 module.exports = {
-    addNewsForMatch : addNewsForMatch,
-    addNewsForTour : addNewsForTour,
+    addNews: addNews,
     getNewsForSport : getNewsForSport,
     getNewsForTour : getNewsForTour,
     getNewsForMatch: getNewsForMatch

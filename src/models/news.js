@@ -9,19 +9,19 @@ const addNews = async news => {
 
 const getNewsForSport = async params => {
     const statement = 'select * from news where news.sportId = ? ;';
-    const parameters = [ params.id ];
+    const parameters = [ params.sportId ];
     return await mysql.query(statement, parameters);
 }
 
 const getNewsForTour = async params => {
     const statement = 'select * from news where news.tourId = ? ;';
-    const parameters = [ params.id ];
+    const parameters = [ params.tourId ];
     return await mysql.query(statement, parameters);
 }
 
 const getNewsForMatch = async params => {
     const statement = 'select * from news where news.matchId = ? ;';
-    const parameters = [ params.id ];
+    const parameters = [ params.matchId ];
     return await mysql.query(statement, parameters);
 }
 
