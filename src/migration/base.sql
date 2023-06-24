@@ -36,6 +36,21 @@ create table if not exists mydb.matches
     foreign key (tourId) references tours(id)
 );
 
+create table if not exists mydb.news
+(
+    id int auto_increment not null primary key,
+    title varchar(100) not null,
+    description varchar(1000) not null,
+    sportId int not null,
+    tourId int not null,
+    matchId int default null,
+    recUpdatedAt timestamp not null default current_timestamp on update current_timestamp,
+    createdAt timestamp not null default current_timestamp,
+    foreign key (sportId) references sports(id),
+    foreign key (tourId) references tours(id),
+    foreign key (matchId) references matches(id)
+);
+
 -- seed data
 insert ignore into mydb.sports (id, name) values (1, 'Cricket');
 insert ignore into mydb.sports (id, name) values (2, 'Football');
@@ -56,3 +71,7 @@ insert ignore into mydb.matches (name, tourId, format, startTime, endTime) value
 insert ignore into mydb.matches (name, tourId, format, startTime, endTime) values ('IND vs WI', 3, 'ODI', '2023-06-12 10:00:00', '2023-06-12 23:00:00');
 insert ignore into mydb.matches (name, tourId, format, startTime, endTime) values ('IND vs WI', 3, 'ODI', '2023-06-14 10:00:00', '2023-06-14 23:00:00');
 insert ignore into mydb.matches (name, tourId, format, startTime, endTime) values ('KER vs JFC', 4, 'soccer', '2022-04-09 18:00:00', '2022-04-09 23:00:00');
+
+insert ignore into mydb.news (title, description, sportId, tourId, matchId) values ('Gujarat Titans ready to win match against RCB, says captain Pandya', 'Founded in 2021, Gujarat Titans home ground is Narendra Modi Stadium in Motera. The franchise is owned by CVC Capital Partners. The team is captained by Hardik Pandya and coached by Ashish Nehra. They won their maiden title in the 2022 season, which was also their debut season.', 1, 1, 1);
+insert ignore into mydb.news (title, description, sportId, tourId, matchId) values ('BLR vs BEN Match Highlights', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 2, 2, 5);
+insert ignore into mydb.news (title, description, sportId, tourId, matchId) values ('BCCI Announces Indias Squads For West Indies Tour:', 'Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industrys standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book.', 1, 3, NULL);

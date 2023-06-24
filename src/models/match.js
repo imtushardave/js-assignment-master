@@ -6,6 +6,16 @@ const getAllMatches = async () => {
     return await mysql.query(statement, parameters);
 }
 
+const getTourAndSportDetailsForMatch = async matchId => {
+    const statement = 'select tours.sportId as sportId, tours.id as tourId from matches ' + 
+    'left join tours on matches.tourId = tours.id where matches.id = ?';
+    const parameters = [ matchId ];
+    let result = await mysql.query(statement, parameters);
+    //result must be unique for each match id
+    return result[0];
+}
+
 module.exports = {
-    getAllMatches: getAllMatches
+    getAllMatches: getAllMatches,
+    getTourAndSportDetailsForMatch : getTourAndSportDetailsForMatch
 }
