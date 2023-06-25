@@ -13,9 +13,19 @@ services:
       - ./src/migration/base.sql:/docker-entrypoint-initdb.d/base.sql
     networks:
       - my-network
+  redis-server:
+    image: redis:alpine
+    ports:
+      - 6379:6379
+    command: redis-server
+    volumes: 
+      - redis-data:/data
+    networks:
+      - my-network
   app:
     depends_on:
       - db
+      - redis-server
     build:
       context: .
       dockerfile: Dockerfile
@@ -31,3 +41,4 @@ networks:
 
 volumes:
   db-data:
+  redis-data:

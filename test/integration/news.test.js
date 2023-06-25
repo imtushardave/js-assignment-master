@@ -35,7 +35,7 @@ describe('Integration tests for News', () => {
             expect(response.status).toBe(400);
         });
 
-        it('should return 400 status when matchId does not exist', async () => {
+        it('should return 400 status when id does not exist', async () => {
             let id = 20;
             let newsType = NewsType.MATCH;
 
